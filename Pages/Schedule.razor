@@ -1,0 +1,67 @@
+@page "/schedule"
+@code
+{
+    public class task 
+    {
+        public void refresh()
+        {
+            Finished = (DateTime.Now - Beginning)>Length? false: true;
+
+        }
+        public task(string name, string description, DateTime beginning, TimeSpan length)
+        {
+            Name = name;
+            Description = description;
+            Beginning = beginning;
+            refresh();
+        }
+
+        public task(string name, DateTime beginning, TimeSpan length)
+        {
+            Name = name;
+            Description = "暂无描述";
+            Beginning = beginning;
+            refresh();
+        }
+        public string Name;
+        public string Description;
+        public DateTime Beginning;
+        public TimeSpan Length;
+        public bool Finished;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        scheduleTasks.Add(new task("reading", DateTime.Now, TimeSpan.FromSeconds(12.0)));
+        scheduleTasks.Add(new task("writing", DateTime.Today - TimeSpan.FromMinutes(10.0), TimeSpan.FromSeconds(12.0)));
+        scheduleTasks.Add(new task("sleeping", "sleeping in noon", DateTime.Now, TimeSpan.FromSeconds(12.0)));
+        scheduleTasks.Add(new task("having dinner", DateTime.Now, TimeSpan.FromSeconds(12.0)));
+        scheduleTasks.Add(new task("reading", DateTime.Now, TimeSpan.FromSeconds(12.0)));
+       
+    }
+    public List<task> scheduleTasks = new List<task>();
+}
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>描述</th>
+            <th>起始时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var scheduletask in scheduleTasks)
+        {
+            <tr>
+                <td>@scheduletask.Name</td>
+                <td>@scheduletask.Description</td>
+                <td>@scheduletask.Beginning.ToString()</td>
+                <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
+                <td><button @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
+            </tr>
+        }
+            
+    </tbody>
+</table>
