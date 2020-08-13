@@ -1,0 +1,39 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        persist-credentials: false
+        dotnet-version: 3.1.101
+
+    - name: Git configure
+      run: git config --global credential.helper
+        && Add-Content -Path "$HOME\.git-credentials" -Value "https://$($env:access_token):x-oauth-basic@github.com\n" -NoNewline
+        && git config --global user.email "www20040718@163.com"
+        && git config --global user.name "DreamEnderKing"
+
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish -o publish -c Release --no-restore
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.5.9
+      with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: master # The branch the action should deploy to.
+          FOLDER: publish/wwwroot # The folder the action should deploy.
+          repositoryName: Home
