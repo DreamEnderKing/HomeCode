@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         persist-credentials: false
-        dotnet-version: 3.1.101
+        dotnet-version: 5.0.100
 
     - name: Git configure
       run: git config --global credential.helper store
