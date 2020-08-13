@@ -24,10 +24,8 @@ jobs:
         && git config --global user.email "www20040718@163.com"
         && git config --global user.name "DreamEnderKing"
 
-    - name: Install dependencies
-      run: dotnet restore
     - name: Build
-      run: dotnet publish -o publish -c Release --no-restore
+      run: dotnet publish -o publish -c Release
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@3.5.9
