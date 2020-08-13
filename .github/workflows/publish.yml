@@ -21,7 +21,6 @@ jobs:
 
     - name: Git configure
       run: git config --global credential.helper
-        && Add-Content -Path "$HOME\.git-credentials" -Value "https://$($env:access_token):x-oauth-basic@github.com\n" -NoNewline
         && git config --global user.email "www20040718@163.com"
         && git config --global user.name "DreamEnderKing"
 
