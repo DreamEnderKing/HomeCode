@@ -42,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule")
+        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json")
             let date = DateTime.Parse(data.Beginning)
             let span = TimeSpan.Parse(data.Length)
             select new task(data.Name, data.Description, date, span)).ToList();
