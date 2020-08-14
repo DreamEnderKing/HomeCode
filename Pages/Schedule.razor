@@ -32,7 +32,7 @@
         public bool Finished;
     }
 
-    private class taskData
+    public class taskData
     {
         public string Name;
         public string Description;
@@ -42,12 +42,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+        try {
         scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json")
             let date = DateTime.Parse(data.Beginning)
             let span = TimeSpan.Parse(data.Length)
             select new task(data.Name, data.Description, date, span)).ToList();
+        }
+        catch(Exception e)
+        {
+            Msg = e.Massage;
+        }
        
     }
+    public string Msg = "";
+
     public List<task> scheduleTasks = new List<task>();
 }
 <table class="table">
@@ -74,3 +82,4 @@
             
     </tbody>
 </table>
+<h1>@Msg</h1>
