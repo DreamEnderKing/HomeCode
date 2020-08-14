@@ -20,10 +20,10 @@ jobs:
     - name: Build
       run: dotnet publish -o publish -c Release
     - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
-        uses: actions/upload-artifact@v1
-        with:
-          name: site
-          path: publish/wwwroot
+      uses: actions/upload-artifact@v1
+      with:
+        name: site
+        path: publish/wwwroot
 deploy:
     needs: [build] # The second job must depend on the first one to complete before running, and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
