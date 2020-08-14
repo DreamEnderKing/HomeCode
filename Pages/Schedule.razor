@@ -1,4 +1,6 @@
 @page "/schedule"
+@using System.Linq
+@inject HttpClient Http;
 @code
 {
     public class task 
@@ -30,13 +32,20 @@
         public bool Finished;
     }
 
+    private class taskData
+    {
+        public string Name;
+        public string Description;
+        public string Beginning;
+        public string Length;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        scheduleTasks.Add(new task("reading", DateTime.Now, TimeSpan.FromSeconds(12.0)));
-        scheduleTasks.Add(new task("writing", DateTime.Today - TimeSpan.FromMinutes(10.0), TimeSpan.FromSeconds(12.0)));
-        scheduleTasks.Add(new task("sleeping", "sleeping in noon", DateTime.Now, TimeSpan.FromSeconds(12.0)));
-        scheduleTasks.Add(new task("having dinner", DateTime.Now, TimeSpan.FromSeconds(12.0)));
-        scheduleTasks.Add(new task("reading", DateTime.Now, TimeSpan.FromSeconds(12.0)));
+        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule")
+            let date = DateTime.Parse(data.Beginning)
+            let span = TimeSpan.Parse(data.Length)
+            select new task(data.Name, data.Description, date, span)).ToList();
        
     }
     public List<task> scheduleTasks = new List<task>();
@@ -59,7 +68,7 @@
                 <td>@scheduletask.Description</td>
                 <td>@scheduletask.Beginning.ToString()</td>
                 <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
-                <td><button @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
+                <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
             </tr>
         }
             
