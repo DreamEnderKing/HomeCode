@@ -1,0 +1,49 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with: 
+        dotnet-version: 3.0.101
+    - name: Build
+      run: dotnet publish -o publish -c Release
+    - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
+        uses: actions/upload-artifact@v1
+        with:
+          name: site
+          path: publish/wwwroot
+deploy:
+    needs: [build] # The second job must depend on the first one to complete before running, and uses ubuntu-latest instead of windows.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Git configure
+        run: git config --global credential.helper store
+          && git config --global user.email "www20040718@163.com"
+          && git config --global user.name "DreamEnderKing"
+      - name: Download Artifacts # The built project is downloaded into the 'site' folder.
+        uses: actions/download-artifact@v1
+        with:
+          name: site
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.5.9
+        with:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          BRANCH: master # The branch the action should deploy to.
+          FOLDER: site # The folder the action should deploy.
+          REPOSITORY_NAME: DreamEnderKing/Home
