@@ -48,3 +48,4 @@ jobs:
           BRANCH: master # The branch the action should deploy to.
           FOLDER: site # The folder the action should deploy.
           REPOSITORY_NAME: DreamEnderKing/Home
+          COMMIT_MESSAGE: Code Updated
