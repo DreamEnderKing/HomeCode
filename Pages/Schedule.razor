@@ -46,7 +46,7 @@
         }
 
         try {
-           scheduleTasks = await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json");
+           scheduleTasks = new List<task>(await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"));
         }
         catch(Exception e)
         {
@@ -56,7 +56,7 @@
     }
     public string Msg = "";
 
-    public task[] scheduleTasks;
+    public List<task> scheduleTasks;
 }
 <table class="table">
     <thead>
