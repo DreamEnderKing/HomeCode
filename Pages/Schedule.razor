@@ -55,18 +55,20 @@
     </thead>
     <tbody>
         @if(scheduleTasks.Length==0)
-            <h2>No tasks were found.</h2>
-        else{
-        @foreach (var scheduletask in scheduleTasks)
         {
-            <tr>
-                <td>@scheduletask.Name</td>
-                <td>@scheduletask.Description</td>
-                <td>@scheduletask.Beginning.ToString()</td>
-                <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
-                <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
-            </tr>
+           <h2>No tasks were found.</h2>
         }
+        else{
+            @foreach (var scheduletask in scheduleTasks)
+            {
+                <tr>
+                    <td>@scheduletask.Name</td>
+                    <td>@scheduletask.Description</td>
+                    <td>@scheduletask.Beginning.ToString()</td>
+                    <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
+                    <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
+                </tr>
+            }
         }
             
     </tbody>
