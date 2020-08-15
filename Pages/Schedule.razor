@@ -25,25 +25,17 @@
             Beginning = beginning;
             refresh();
         }
-        public string Name;
-        public string Description;
-        public DateTime Beginning;
-        public TimeSpan Length;
-        public bool Finished;
-    }
-
-    public class taskData
-    {
-        public string Name{get; set;};
-        public string Description{get; set;};
-        public string Beginning{get; set;};
-        public string Length{get; set;};
+        public string Name{get; set;}
+        public string Description{get; set;}
+        public DateTime Beginning{get; set;}
+        public TimeSpan Length{get; set;}
+        public bool Finished{get; set;}
     }
 
     protected override async Task OnInitializedAsync()
     {
         try {
-        foreach(var data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json"))
+        foreach(var data in await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"))
         {
             Msg += "ABC:" + data.Name + data.Description + data.Beginning + data.Length + "\n";
         }
@@ -54,10 +46,7 @@
         }
 
         try {
-        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json")
-            let date = DateTime.Parse(data.Beginning)
-            let span = TimeSpan.Parse(data.Length)
-            select new task(data.Name, data.Description, date, span)).ToList();
+           scheduleTasks = await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json");
         }
         catch(Exception e)
         {
