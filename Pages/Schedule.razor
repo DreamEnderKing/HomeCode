@@ -47,10 +47,14 @@
             let date = DateTime.Parse(data.Beginning)
             let span = TimeSpan.Parse(data.Length)
             select new task(data.Name, data.Description, date, span)).ToList();
+        foreach(var data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json"))
+        {
+            Msg += data.Name + data.Description + data.Beginning + data.Length;
+        }
         }
         catch(Exception e)
         {
-            Msg = e.Message;
+            Msg += e.Message;
         }
        
     }
