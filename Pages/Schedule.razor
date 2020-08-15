@@ -10,26 +10,11 @@
             Finished = (DateTime.Now - Beginning)>Length? false: true;
 
         }
-        public task(string name, string description, DateTime beginning, TimeSpan length)
-        {
-            Name = name;
-            Description = description;
-            Beginning = beginning;
-            refresh();
-        }
-
-        public task(string name, DateTime beginning, TimeSpan length)
-        {
-            Name = name;
-            Description = "暂无描述";
-            Beginning = beginning;
-            refresh();
-        }
         public string Name{get; set;}
         public string Description{get; set;}
         public DateTime Beginning{get; set;}
         public TimeSpan Length{get; set;}
-        public bool Finished{get; set;}
+        public bool Finished = true;
     }
 
     protected override async Task OnInitializedAsync()
@@ -69,6 +54,9 @@
         </tr>
     </thead>
     <tbody>
+        @if(scheduleTasks.Length==0)
+            <h2>No tasks were found.</h2>
+        @else{
         @foreach (var scheduletask in scheduleTasks)
         {
             <tr>
@@ -78,6 +66,7 @@
                 <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
                 <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
             </tr>
+        }
         }
             
     </tbody>
