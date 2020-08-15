@@ -43,18 +43,25 @@
     protected override async Task OnInitializedAsync()
     {
         try {
-        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json")
-            let date = DateTime.Parse(data.Beginning)
-            let span = TimeSpan.Parse(data.Length)
-            select new task(data.Name, data.Description, date, span)).ToList();
         foreach(var data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json"))
         {
-            Msg += data.Name + data.Description + data.Beginning + data.Length;
+            Msg += "ABC:" + data.Name + data.Description + data.Beginning + data.Length + "\n";
         }
         }
         catch(Exception e)
         {
-            Msg += e.Message;
+            Msg += "E1" + e.Message + "\n";
+        }
+
+        try {
+        scheduleTasks = (from data in await Http.GetFromJsonAsync<taskData[]>("sample-data/schedule.json")
+            let date = DateTime.Parse(data.Beginning)
+            let span = TimeSpan.Parse(data.Length)
+            select new task(data.Name, data.Description, date, span)).ToList();
+        }
+        catch(Exception e)
+        {
+            Msg += "E2:" + e.Message + "\n";
         }
        
     }
