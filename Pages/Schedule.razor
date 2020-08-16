@@ -1,65 +1,23 @@
 @page "/schedule"
 @using System.Linq
 @inject HttpClient Http;
-@code
+@if(scheduleTasks.Count == 0)
 {
-    public class task 
-    {
-        public void refresh()
-        {
-            Finished = (DateTime.Now - Beginning)>Length? false: true;
-
-        }
-        public string Name{get; set;}
-        public string Description{get; set;}
-        public DateTime Beginning{get; set;}
-        public TimeSpan Length{get; set;}
-        public bool Finished = true;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        try {
-        foreach(var data in await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"))
-        {
-            Msg += "ABC:" + data.Name + data.Description + data.Beginning + data.Length + "\n";
-        }
-        }
-        catch(Exception e)
-        {
-            Msg += "E1" + e.Message + "\n";
-        }
-
-        try {
-           scheduleTasks = new List<task>(await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"));
-        }
-        catch(Exception e)
-        {
-            Msg += "E2:" + e.Message + "\n";
-        }
-       
-    }
-    public string Msg = "";
-
-    public List<task> scheduleTasks;
+    <h2>No tasks were found.</h2>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>名称</th>
-            <th>描述</th>
-            <th>起始时间</th>
-            <th>状态</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(scheduleTasks.Count == 0)
-        {
-           <h2>No tasks were found.</h2>
-        }
-        else
-        {
+else
+{        
+    <table class="table">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>描述</th>
+                <th>起始时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var scheduletask in scheduleTasks)
             {
                 <tr>
@@ -69,9 +27,54 @@
                     <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
                     <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
                 </tr>
+            }  
+        </tbody>
+</table>
+}
+<h1>@Msg</h1>
+
+@code
+{
+    public string Msg = "";
+
+    private List<task> scheduleTasks = new List<task>();
+    private Timer timer1 = new Timer();
+
+    protected override async Task OnInitializedAsync()
+    {        
+        scheduleTasks.AddRange(await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"));
+        scheduleTasks.ForEach((t)=>{
+            t.refresh();
+        });
+       timer1.Interval = 1000;
+        timer1.Elapsed += (source, e)=>{
+            scheduleTasks.ForEach((t)=>{
+                t.refresh();
+            });
+        };
+        timer1.Start();
+    }
+    public class task 
+    {
+        public void refresh()
+        {
+            Finished = ((DateTime.Now - Beginning)<=Length)? false: true;
+
+        }
+        public string Name{get; set;}
+        public string Description{get; set;}
+        public DateTime Beginning{get;set;}
+        public TimeSpan Length{get;set;}
+        public string Data_Beginning{
+            set {
+                Beginning = DateTime.Parse(value);
             }
         }
-            
-    </tbody>
-</table>
-<h1>@Msg</h1>
+        public string Data_Length{
+            set{
+                Length = TimeSpan.Parse(value);
+            }
+        }
+        public bool Finished = false;
+    }
+}
