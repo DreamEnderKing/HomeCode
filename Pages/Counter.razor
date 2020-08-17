@@ -1,16 +1,36 @@
 ﻿@page "/counter"
+@inject IJSRuntime JSRuntime;
+@using System.Drawing
 
-<h1>Counter</h1>
+<h1>Counter</h1><br />
+<h3>
+    We will calculate the value of Pi by many experiments.<br />
+    I'll try .Net connecting javascript meanwhile.
+</h3>
 
 <p>Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<canvas id="canvas" width="500" height="500"></canvas>
+
+
 @code {
     private int currentCount = 0;
-
-    private void IncrementCount()
+    private int insideCount = 0;
+    private async void IncrementCount()
     {
-        currentCount++;
+        currentCount += 500;
+
+        int x = 0;
+        int y = 0;
+        Random random = new Random();
+        for(int i = 0; i<=500; i++)
+        {
+            x = random.Next(0, 200);
+            y = random.Next(0, 200);
+            var v = await JSRuntime.InvokeAsync<int>("drawPoint", x, y);
+
+        }
     }
 }
