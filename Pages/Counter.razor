@@ -29,7 +29,7 @@
         {
             x = random.Next(0, 200);
             y = random.Next(0, 200);
-            var v = await JSRuntime.InvokeAsync<int>("drawPoint", x, y);
+            await JSRuntime.InvokeAsync<int>("drawPoint", x, y);
 
         }
     }
