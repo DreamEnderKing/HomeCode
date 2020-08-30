@@ -18,6 +18,8 @@ jobs:
       with: 
         dotnet-version: 3.0.101
     - name: Build
+      run: dotnet restore
+      run: dotnet test
       run: dotnet publish -o publish -c Release
     - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
       uses: actions/upload-artifact@v1
