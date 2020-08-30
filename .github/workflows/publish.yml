@@ -16,9 +16,9 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with: 
-        dotnet-version: 3.0.101
+        dotnet-version: 3.1.7
     - name: Test
-      run: dotnet restore && dotnet test
+      run: dotnet test
     - name: Build
       run: dotnet publish -o publish -c Release
     - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
