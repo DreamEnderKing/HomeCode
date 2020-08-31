@@ -7,29 +7,34 @@
     We will calculate the value of Pi by many experiments.<br />
     I'll try .Net connecting javascript meanwhile.
 </h3>
-
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-
-<canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvas" width="8000" height="8000" onload="canvasLoad"></canvas>
 
 
 @code {
     private int currentCount = 0;
     private int insideCount = 0;
+    private int radius = 2;
+    private const int times = 1;
+    private void IncrementRadius()
+    {
+        radius += 2;
+    }
     private async void IncrementCount()
     {
-        currentCount += 500;
+        currentCount += times;
 
         int x = 0;
         int y = 0;
         Random random = new Random();
-        for(int i = 0; i<=500; i++)
+        for(int i = 1; i<=times; i++)
         {
-            x = random.Next(0, 200);
-            y = random.Next(0, 200);
-            await JSRuntime.InvokeAsync<int>("drawPoint", x, y);
+            x = random.Next(0, 8000);
+            y = random.Next(0, 8000);
+            await JSRuntime.InvokeAsync<int>("drawPoint", x, y, radius);
 
         }
     }
