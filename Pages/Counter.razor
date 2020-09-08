@@ -11,7 +11,7 @@
 <button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount</p>
 
-<canvas id="canvas" width="8000" height="8000" onload="canvasLoad"></canvas>
+<canvas id="canvas" width="400" height="400" onload="canvasLoad"></canvas>
 
 
 @code {
@@ -32,8 +32,8 @@
         Random random = new Random();
         for(int i = 1; i<=times; i++)
         {
-            x = random.Next(0, 8000);
-            y = random.Next(0, 8000);
+            x = random.Next(0, 400);
+            y = random.Next(0, 400);
             await JSRuntime.InvokeAsync<int>("drawPoint", x, y, radius);
 
         }
