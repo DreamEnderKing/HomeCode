@@ -19,11 +19,11 @@ Pi Value:@(insideCount / currentCount)</p>
 @code {
     private int currentCount = 0;
     private int insideCount = 0;
-    private int radius = 2;
+    private int radius = 1;
     private const int times = 500;
     private void IncrementRadius()
     {
-        radius += 2;
+        radius += 1;
     }
     private async void IncrementCount()
     {
@@ -37,7 +37,7 @@ Pi Value:@(insideCount / currentCount)</p>
             x = random.Next(0, 400);
             y = random.Next(0, 400);
             await JSRuntime.InvokeAsync<int>("drawPoint", x, y, radius);
-            if (x ^ 2 + y ^ 2 <= 200 ^ 2)
+            if (Math.Pow(x, 2) + Math.Pow(y, 2) <= 40000)
             {
                 insideCount++;
             }
