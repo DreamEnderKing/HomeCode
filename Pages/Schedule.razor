@@ -1,12 +1,14 @@
 @page "/schedule"
 @using System.Linq
 @inject HttpClient Http;
+
+<SetTitle title="Schesule"></SetTitle>
 @if(scheduleTasks.Count == 0)
 {
     <h2>No tasks were found.</h2>
 }
 else
-{        
+{
     <table class="table">
         <thead>
             <tr>
@@ -27,7 +29,7 @@ else
                     <td style="color:@(scheduletask.Finished?"green":"red")">@(scheduletask.Finished?"已完成":"未完成")</td>
                     <td><button class="btn btn-danger" @onclick="@((e)=>{scheduleTasks.Remove(scheduletask);})">删除</button></td>
                 </tr>
-            }  
+            }
         </tbody>
 </table>
 }
@@ -41,7 +43,7 @@ else
     private Timer timer1 = new Timer();
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
         scheduleTasks.AddRange(await Http.GetFromJsonAsync<task[]>("sample-data/schedule.json"));
         scheduleTasks.ForEach((t)=>{
             t.refresh();
@@ -54,7 +56,7 @@ else
         };
         timer1.Start();
     }
-    public class task 
+    public class task
     {
         public void refresh()
         {
