@@ -21,6 +21,8 @@ jobs:
       run: dotnet test
     - name: Build
       run: dotnet publish -o publish -c Release
+    - name: Upload static files
+      run: Copy-Item -Path wwwroot -Destination publish -Recurse -force
     - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
       uses: actions/upload-artifact@v1
       with:
