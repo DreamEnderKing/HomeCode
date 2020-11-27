@@ -2,6 +2,7 @@ window.drawPoint = (x, y, r) => {
     can = canvasLoad();
     //window.alert("Me");
     can.arc(x - r / 2, y - r / 2, r, 0, 2 * Math.PI);
+    can.fill();
     return 0;
 }
 
@@ -10,6 +11,7 @@ function canvasLoad(){
     can = document.getElementById("canvas").getContext("2d");
     if(!isScaled) {
         can.arc(0, 0, 200, 0, 2 * Math.PI);
+        can.fill();
         can.rect(0, 0, 200, 200);
         //can.scale(0.4, 0.4);
         isScaled = true;

@@ -23,9 +23,9 @@
             const originalResponseBuffer = await response.arrayBuffer();
             const originalResponseArray = new Int8Array(originalResponseBuffer);
             const decompressedResponseArray = BrotliDecode(originalResponseArray);
-            const contentType = type === 
+            const contentType = type ===
               'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
-            return new Response(decompressedResponseArray, 
+            return new Response(decompressedResponseArray,
               { headers: { 'content-type': contentType } });
           })();
         }
@@ -71,7 +71,11 @@
 
 <body>
   <button style="display: none;">Test</button>
-  <app>加载中……</app>
+  <app>
+    <div id="waiting_pan">
+      <p>waiting......</p>
+    </div>
+  </app>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
