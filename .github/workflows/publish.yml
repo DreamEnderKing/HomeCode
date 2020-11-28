@@ -46,7 +46,7 @@ jobs:
         with:
           name: site
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.5.9
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           BRANCH: master # The branch the action should deploy to.
