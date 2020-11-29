@@ -20,7 +20,7 @@ function canvasLoad(){
         isScaled = true;
     }
     else {
-        can.fillStyle = "FF0000";
+        can.fillStyle = "#FF0000";
     }
     return can;
 }
