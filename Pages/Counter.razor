@@ -43,10 +43,11 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
                 insideCount++;
             }
         }
-        protected override async Task OnInitializedAsync()
-        {
-            await JSRuntime.InvokeAsync("canvasLoad");
-        }
-
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeAsync("canvasLoad");
+    }
+
 }
