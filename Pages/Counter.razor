@@ -47,7 +47,7 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
 
     protected override async Task OnInitializedAsync()
     {
-        await JSRuntime.InvokeAsync("canvasLoad");
+        await JSRuntime.InvokeVoidAsync("canvasLoad");
     }
 
 }
