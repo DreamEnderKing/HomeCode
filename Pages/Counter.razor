@@ -28,7 +28,7 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
         radius += 1;
     }
 
-    private void canvasLoad()
+    private async void canvasLoad()
     {
         await JSRuntime.InvokeVoidAsync("canvasLoad");
     }
