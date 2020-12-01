@@ -3,7 +3,6 @@ window.drawPoint = (x, y, r) => {
     can.fillStyle = "#FF0000";
     //window.alert("Me");
     can.fillRect(x, y, r, r);
-    can.fill();
     return 0;
 }
 
@@ -14,5 +13,5 @@ function canvasLoad(){
     can.arc(200, 200, 200, 0, 2 * Math.PI);
     can.fill();
     can.strokeStyle = "#000000";
-    can.strokeRect(0, 0, 200, 200);
+    can.strokeRect(0, 0, 400, 400);
 }
