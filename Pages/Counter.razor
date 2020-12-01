@@ -8,7 +8,8 @@
     We will calculate the value of Pi by many experiments.<br />
     I'll try .Net connecting javascript meanwhile.
 </h3>
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="canvasLoad">Load</button><br />
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button><br />
 <button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount<br />
 Inside count:@insideCount<br />
@@ -25,6 +26,11 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
     private void IncrementRadius()
     {
         radius += 1;
+    }
+
+    private void canvasLoad()
+    {
+        await JSRuntime.InvokeVoidAsync("canvasLoad");
     }
     private async void IncrementCount()
     {
@@ -47,7 +53,7 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
 
     protected override async Task OnInitializedAsync()
     {
-        await JSRuntime.InvokeVoidAsync("canvasLoad");
+
     }
 
 }
