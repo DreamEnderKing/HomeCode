@@ -13,7 +13,7 @@
 <button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount<br />
 Inside count:@insideCount<br />
-Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToString())</p>
+Pi Value:@Pi_Value</p>
 
 <canvas id="canvas" width="400" height="400" onload="canvasLoad"></canvas>
 
@@ -22,6 +22,7 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
     private int currentCount = 0;
     private int insideCount = 0;
     private int radius = 1;
+    private string Pi_Value = "Undefined";
     private const int times = 500;
     private void IncrementRadius()
     {
@@ -55,6 +56,7 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
 
         t_Draw.Start();
         t_Draw.Wait();
+        Pi_Value = (insideCount / currentCount).ToString();
     }
 
     protected override async Task OnInitializedAsync()
