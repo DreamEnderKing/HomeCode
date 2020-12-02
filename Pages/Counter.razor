@@ -32,23 +32,29 @@ Pi Value:@((currentCount == 0) ? "Undefined" : (insideCount / currentCount).ToSt
     {
         await JSRuntime.InvokeVoidAsync("canvasLoad");
     }
-    private async void IncrementCount()
+    private void IncrementCount()
     {
         currentCount += times;
 
-        int x = 0;
-        int y = 0;
-        Random random = new Random();
-        for(int i = 1; i<=times; i++)
-        {
-            x = random.Next(0, 400);
-            y = random.Next(0, 400);
-            await JSRuntime.InvokeAsync<int>("drawPoint", x, y, radius);
-            if (Math.Pow(x, 2) + Math.Pow(y, 2) <= 40000)
+        Task t_Draw = new Task(()=>{
+            int x = 0;
+            int y = 0;
+            Random random = new Random();
+            for(int i = 1; i<=times; i++)
             {
-                insideCount++;
+                x = random.Next(0, 400);
+                y = random.Next(0, 400);
+                JSRuntime.InvokeAsync<int>("drawPoint", x, y, radius);
+                if (Math.Pow(x - 200, y - 200) + Math.Pow(y, 2) <= 40000)
+                {
+                    insideCount++;
+                }
             }
-        }
+
+        });
+
+        t_Draw.Start();
+        t_Draw.Wait();
     }
 
     protected override async Task OnInitializedAsync()
