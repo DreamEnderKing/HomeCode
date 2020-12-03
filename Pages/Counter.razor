@@ -19,8 +19,8 @@ Pi Value:@Pi_Value</p>
 
 
 @code {
-    private int currentCount = 0;
-    private int insideCount = 0;
+    private double currentCount = 0;
+    private double insideCount = 0;
     private int radius = 1;
     private string Pi_Value = "Undefined";
     private const int times = 500;
@@ -56,7 +56,7 @@ Pi Value:@Pi_Value</p>
 
         t_Draw.Start();
         t_Draw.Wait();
-        Pi_Value = (insideCount / currentCount).ToString();
+        Pi_Value = (insideCount / currentCount * 4).ToString();
     }
 
     protected override async Task OnInitializedAsync()
