@@ -1,4 +1,4 @@
-<script>
+
     Blazor.start({
       loadBootResource: function (type, name, defaultUri, integrity) {
         if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
@@ -18,4 +18,4 @@
         }
       }
     });
-</script>
+
