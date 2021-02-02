@@ -129,23 +129,6 @@ app {
     z-index: 1000;
 }
 
-div.producer {
-    color: #383d41;
-    background-color: #e2e3e5;
-    margin: 0;
-    position: relative;
-    bottom: 0;
-    align-content: center;
-}
-
-#canvas {
-    border-color: black;
-    border-width: 3px;
-    left: 0;
-    width: 400px;
-    height: 400px;
-}
-
 #blazor-error-ui .dismiss {
     cursor: pointer;
     position: absolute;
