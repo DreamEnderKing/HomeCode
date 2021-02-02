@@ -1,0 +1,29 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+@media (max-width: 767.98px) {
+  #canvas {
+    border-color: black;
+    border-width: 3px;
+    left: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+#canvas {
+    border-color: black;
+    border-width: 3px;
+    left: 0;
+    width: 400px;
+    height: 400px;
+    }
+}
+
+div.producer {
+    color: #383d41;
+    background-color: #e2e3e5;
+    margin: 0;
+    position: relative;
+    bottom: 0;
+    align-content: center;
+}
