@@ -1,4 +1,4 @@
-    <script type="text/javascript">
+
         (function(l) {
             if (l.search) {
                 var q = {};
@@ -15,4 +15,3 @@
                 }
             }
         }(window.location))
-    </script>
