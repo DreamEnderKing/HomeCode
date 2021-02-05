@@ -22,13 +22,24 @@
 }
 
 @media (min-width: 768px) {
-#canvas {
-    border-color: black;
-    border-width: 3px;
-    left: 0;
-    width: 400px;
-    height: 400px;
+  #canvas {
+      border-color: black;
+      border-width: 3px;
+      left: 0;
+      width: 400px;
+      height: 400px;
+      }
+    #waiting_pan {
+      text-align: center;
+      background-color: black;
+      color: whitesmoke;
+      border-radius: 20px;
+      width: 60%;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%,100%);
     }
+    
 }
 
 div.producer {
