@@ -1,16 +1,16 @@
 function SetFillStyle(key, style)
 {
-   var can = #(key).getContext("2d");
+   var can = $(key).getContext("2d");
    can.fillStyle = style;
 }
 function SetStrokeStyle(key, style)
 {
-   var can = #(key).getContext("2d");
+   var can = $(key).getContext("2d");
    can.strokeStyle = style;
 }
 function SetShadow(key, color, blur, offsetX, offsetY)
 {
-   var can = #(key).getContext("2d");
+   var can = $(key).getContext("2d");
    can.shadowColor = color;
    can.shadowBlur = blur;
    can.shadowOffsetX = offsetX;
@@ -18,11 +18,17 @@ function SetShadow(key, color, blur, offsetX, offsetY)
 }
 function SetLineCap(key, cap)
 {
-   var can = #(key).getContext("2d");
+   var can = $(key).getContext("2d");
    can.lineCap = cap;
 }
 function SetLineJoin(key, join)
 {
-   var can = #(key).getContext("2d");
+   var can = $(key).getContext("2d");
    can.lineJoin = join;
+}
+
+function FillRect(key, left, top, width, height)
+{
+   var can = $(key).getContext("2d");
+   can.fillRect(left, top, width, height);
 }
