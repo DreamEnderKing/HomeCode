@@ -9,6 +9,7 @@
     We will calculate the value of Pi by many experiments.<br />
     I'll try .Net connecting javascript meanwhile.
 </h3>
+<button class="btn btn-primary" @onclick="canvasLoad">Load</button><br />
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button><br />
 <button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount<br />
@@ -61,7 +62,7 @@ Pi Value:@Pi_Value</p>
 
     protected override async Task OnInitializedAsync()
     {
-        canvasLoad();
+
     }
 
 }
