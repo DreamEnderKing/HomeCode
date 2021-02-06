@@ -21,7 +21,7 @@ namespace System.Drawing.Canvas
     public sealed class SolidBrush : Brush{
         public Color Color;
         public SolidBrush(Color color) => Color = color;
-        public override object Convey() => return "#000000";
+        public override object Convey() => "#000000";
     }
     public struct Point{
         public int X;
