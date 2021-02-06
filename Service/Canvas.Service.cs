@@ -16,11 +16,22 @@ namespace System.Drawing.Canvas
         public int a;
     }
     public abstract class Brush{
-
+        public abstract object Convey();
     }
-    public sealed class SolidBrush{
+    public sealed class SolidBrush : Brush{
         public Color Color;
         public SolidBrush(Color color) => Color = color;
+        public override object Convey() => return "#000000";
+    }
+    public struct Point{
+        public int X;
+        public int Y;
+        public Point(int x, int y) => (X, Y) = (x, y);
+    }
+    public struct Size{
+        public int X;
+        public int Y;
+        public Size(int x, int y) => (X, Y) = (x, y);
     }
     #region Font
     public enum FontStyle{
@@ -65,6 +76,8 @@ namespace System.Drawing.Canvas
         }
     }
     #endregion
+
+
     public class Canvas2D{
         #region Definite
         private IJSRuntime JS;
@@ -76,6 +89,14 @@ namespace System.Drawing.Canvas
             Key = key;
             isInited = true;
         }
+        public void DrawRect(Point point, Size size, Brush brush){
+            JSRuntime.InvokeAsync<void>("SetStrokeStyle", key, brush.Convey());
+            JSRuntime.InvokeAsync<void>("BeginPath", key);
+            JSRuntime.InvokeAsync<void>("CreateRect", key, point.X, point.Y, size.X, size.Y);
+            JSRuntime.InvokeAsync<void>("StrokePath", key);
+            JSRuntime.InvokeAsync<void>("ClosePath", key);
+        }
+        
         #endregion
     }
 }
