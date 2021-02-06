@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Drawing.Canvas;
 using System.Threading.Tasks;
 using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
