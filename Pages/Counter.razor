@@ -11,7 +11,7 @@
 </h3>
 <button class="btn btn-primary" @onclick="canvasLoad">Load</button><br />
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button><br />
-<button class="btn btn-primary" @onclick="IncrementRadius">Radius</button>
+<button class="btn btn-primary" style="display: none;" @onclick="IncrementRadius">Radius</button>
 <p>Current count: @currentCount<br />
 Inside count:@insideCount<br />
 Pi Value:@Pi_Value</p>
@@ -62,7 +62,7 @@ Pi Value:@Pi_Value</p>
 
     protected override async Task OnInitializedAsync()
     {
-
+        Canvas.Init(JSRuntime);
     }
 
 }
