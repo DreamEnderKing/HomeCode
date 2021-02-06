@@ -90,11 +90,11 @@ namespace System.Drawing.Canvas
             isInited = true;
         }
         public void DrawRect(Point point, Size size, Brush brush){
-            JSRuntime.InvokeAsync<void>("SetStrokeStyle", key, brush.Convey());
-            JSRuntime.InvokeAsync<void>("BeginPath", key);
-            JSRuntime.InvokeAsync<void>("CreateRect", key, point.X, point.Y, size.X, size.Y);
-            JSRuntime.InvokeAsync<void>("StrokePath", key);
-            JSRuntime.InvokeAsync<void>("ClosePath", key);
+            JSRuntime.InvokeVoidAsync("SetStrokeStyle", key, brush.Convey());
+            JSRuntime.InvokeVoidAsync("BeginPath", key);
+            JSRuntime.InvokeVoidAsync("CreateRect", key, point.X, point.Y, size.X, size.Y);
+            JSRuntime.InvokeVoidAsync("StrokePath", key);
+            JSRuntime.InvokeVoidAsync("ClosePath", key);
         }
         
         #endregion
