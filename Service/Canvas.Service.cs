@@ -118,7 +118,20 @@ namespace System.Drawing.Canvas
             if(size.X != size.Y) throw new Exception("The size must fit a circle!");
             await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(), brush.Alpha);
             await JS.InvokeVoidAsync("BeginPath", Key);
-            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 360);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 2 * Math.PI);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("StrokePath", Key);
+        }
+        public async void DrawArc(Point point, Size size, Brush brush, int sAngle, int eAngle, bool clockwise){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(), brush.Alpha);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle / 180 * Math.PI, eAngle / 180 * Math.PI, clockwise);
+            await JS.InvokeVoidAsync("MoveTo", Key, point.X + size.X / 2, point.Y + size.Y / 2);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(sAngle / 180 * Math.PI)), point.Y + size.Y / 2 * (1 - Math.Sin(sAngle / 180 * Math.PI)));
+            await JS.InvokeVoidAsync("MoveTo", Key, point.X + size.X / 2, point.Y + size.Y / 2);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(eAngle / 180 * Math.PI)), point.Y + size.Y / 2 * (1 - Math.Sin(eAngle / 180 * Math.PI)));
+
             await JS.InvokeVoidAsync("ClosePath", Key);
             await JS.InvokeVoidAsync("StrokePath", Key);
         }
