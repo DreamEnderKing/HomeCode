@@ -7,7 +7,21 @@ using Microsoft.JSInterop;
 
 namespace System.Drawing.Canvas
 {
-    public struct Color{
+    public static class ColorCustom{
+        public static String FromInt10ToInt16(int i){
+            i = Math.Abs(i);
+            String result = "";
+            char[] char16 = new char[]
+                {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+            do
+            {
+                result = result + char16[i % 16];
+                i = (i - i % 16) / 16;
+            } while (i != 0);
+            return result;
+        }
+    }
+    public class Color{
         public Color(int Red, int Green, int Blue, int Alpha)=>
             (r, g, b, a) = (Red, Green, Blue, Alpha);
         public int r;
@@ -17,11 +31,15 @@ namespace System.Drawing.Canvas
     }
     public abstract class Brush{
         public abstract object Convey();
+        public int Alpha;
     }
     public sealed class SolidBrush : Brush{
         public Color Color;
-        public SolidBrush(Color color) => Color = color;
-        public override object Convey() => "#000000";
+        public SolidBrush(Color color) => (Color, Alpha) = (color, color.a);
+        public override object Convey() => "#" 
+            + ((ColorCustom.FromInt10ToInt16(Color.r).Length == 2)? ColorCustom.FromInt10ToInt16(Color.r): "0" + ColorCustom.FromInt10ToInt16(Color.r))
+            + ((ColorCustom.FromInt10ToInt16(Color.g).Length == 2)? ColorCustom.FromInt10ToInt16(Color.g): "0" + ColorCustom.FromInt10ToInt16(Color.g))
+            + ((ColorCustom.FromInt10ToInt16(Color.b).Length == 2)? ColorCustom.FromInt10ToInt16(Color.b): "0" + ColorCustom.FromInt10ToInt16(Color.b));
     }
     public struct Point{
         public int X;
@@ -83,18 +101,26 @@ namespace System.Drawing.Canvas
         private IJSRuntime JS;
         private String Key;
         private bool isInited = false;
-        public void Init(IJSRuntime JSRuntime, String key = "#canvas")
+        public void Init(IJSRuntime JSRuntime, String key = "canvas")
         {
             JS = JSRuntime;
             Key = key;
             isInited = true;
         }
-        public void DrawRect(Point point, Size size, Brush brush){
-            JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey());
-            JS.InvokeVoidAsync("BeginPath", Key);
-            JS.InvokeVoidAsync("CreateRect", Key, point.X, point.Y, size.X, size.Y);
-            JS.InvokeVoidAsync("StrokePath", Key);
-            JS.InvokeVoidAsync("ClosePath", Key);
+        public async void DrawRect(Point point, Size size, Brush brush){
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(), brush.Alpha);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateRect", Key, point.X, point.Y, size.X, size.Y);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("StrokePath", Key);
+        }
+        public async void DrawCircle(Point point, Size size, Brush brush){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(), brush.Alpha);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 360);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("StrokePath", Key);
         }
         
         #endregion
