@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Nuget setup
+      run: nuget install SkiaSharp
     - name: Test
       run: dotnet test
     - name: Build
