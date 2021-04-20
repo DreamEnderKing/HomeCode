@@ -39,6 +39,16 @@ function SetLineMiter(key, width)
    var can = document.getElementById(key).getContext("2d");
    can.miterLimit = width;
 }
+function CreateLinearGradient(key, x0, y0, x1, y1) {
+   return document.getElementById(key).getContext("2d").createLinearGradient(x0, y0, x1, y1);
+}
+function CreateRadialGradient(key, x0, y0, x1, y1, r1, r2) {
+   return document.getElementById(key).getContext("2d").createRadialGradient(x0, y0, r1, x1, y1, r2);
+}
+function AddGradientPoint(gra, point, color) {
+   gra.addColorStop(point, color);
+   return gra;
+}
 
 
 
