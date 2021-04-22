@@ -39,14 +39,20 @@ function SetLineMiter(key, width)
    var can = document.getElementById(key).getContext("2d");
    can.miterLimit = width;
 }
-function CreateLinearGradient(key, x0, y0, x1, y1) {
-   return document.getElementById(key).getContext("2d").createLinearGradient(x0, y0, x1, y1);
+function CreateLinearGradient() {
+   var gra = document.getElementById(arguments[0]).getContext("2d").createLinearGradient(arguments[1], arguments[2], arguments[3], arguments[4]);
+   var arg = arguments[5];
+   for (let i = 0; i < arg.length; i = i + 2) {
+      gra.addColorStop(arg[i], arg[i + 1]);
+   }
+   return gra;
 }
-function CreateRadialGradient(key, x0, y0, x1, y1, r1, r2) {
-   return document.getElementById(key).getContext("2d").createRadialGradient(x0, y0, r1, x1, y1, r2);
-}
-function AddGradientPoint(gra, point, color) {
-   gra.addColorStop(point, color);
+function CreateRadialGradient() {
+   var gra = document.getElementById(arguments[0]).getContext("2d").createRadialGradient(arguments[1], arguments[2], arguments[5], arguments[3], arguments[4], arguments[6]);
+   var arg = arguments[7];
+   for (let i = 0; i < arg.length; i = i + 2) {
+      gra.addColorStop(arg[i], arg[i + 1]);
+   }
    return gra;
 }
 

@@ -37,20 +37,20 @@ namespace System.Drawing.Canvas
             string _r = ColorCustom.FromInt10ToInt16(r);
             string _g = ColorCustom.FromInt10ToInt16(g);
             string _b = ColorCustom.FromInt10ToInt16(b);
-            _r = _r.Length == 2 ? _r : "0{_r}";
-            _g = _g.Length == 2 ? _g : "0{_g}";
-            _b = _b.Length == 2 ? _b : "0{_b}";
-            return "#{_r}{_g}{_b}";
+            _r = _r.Length == 2 ? _r : $"0{_r}";
+            _g = _g.Length == 2 ? _g : $"0{_g}";
+            _b = _b.Length == 2 ? _b : $"0{_b}";
+            return $"#{_r}{_g}{_b}";
         }
     }
     public abstract class Brush{
-        public abstract object Convey(IJSRuntime js, string key);
+        public async virtual Task<object> Convey(IJSRuntime js, string key) => null;
         public int Alpha = 255;
     }
     public sealed class SolidBrush : Brush {
         public Color Color;
         public SolidBrush(Color color) => (Color, Alpha) = (color, color.a);
-        public override object Convey(IJSRuntime js, string key) => Color.ToString();
+        public override async Task<object> Convey(IJSRuntime js, string key) => Color.ToString();
     }
     public sealed class LinearGradientBrush : Brush {
         public LinearGradientBrush(Point p1, Point p2, params (double, Color)[] o) {
@@ -61,16 +61,14 @@ namespace System.Drawing.Canvas
         public Point Point1;
         public Point Point2;
         public Dictionary<double, Color> Points = new Dictionary<double, Color>();
-        public override object Convey(IJSRuntime js, string key)
+        public override async Task<object> Convey(IJSRuntime js, string key)
         {
-            ValueTask<object> t = js.InvokeAsync<object>("CreateLinearGradient", key, Point1.X, Point1.Y, Point2.X, Point2.Y);
-            while(!t.IsCompleted) ;
-            object o = t.Result;
+            List<Object> l = new List<object>();
             foreach (var i in Points) {
-                t = js.InvokeAsync<object>("AddGradientPoint", o, i.Key, i.Value.ToString());
-                while(!t.IsCompleted) ;
-                o = t.Result;
+                l.Add(i.Key);
+                l.Add(i.Value.ToString());
             }
+            object o = await js.InvokeAsync<object>("CreateLinearGradient", key, Point1.X, Point1.Y, Point2.X, Point2.Y, l.ToArray());
             return o;
         }
     }
@@ -143,7 +141,7 @@ namespace System.Drawing.Canvas
             isInited = true;
         }
         public async void DrawRect(Point point, Size size, Brush brush){
-            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(JS, Key), brush.Alpha);
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, await brush.Convey(JS, Key), brush.Alpha);
             await JS.InvokeVoidAsync("BeginPath", Key);
             await JS.InvokeVoidAsync("CreateRect", Key, point.X, point.Y, size.X, size.Y);
             await JS.InvokeVoidAsync("ClosePath", Key);
@@ -151,7 +149,7 @@ namespace System.Drawing.Canvas
         }
         public async void DrawCircle(Point point, Size size, Brush brush){
             if(size.X != size.Y) throw new Exception("The size must fit a circle!");
-            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(JS, Key), brush.Alpha);
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, await brush.Convey(JS, Key), brush.Alpha);
             await JS.InvokeVoidAsync("BeginPath", Key);
             await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 2 * Math.PI);
             await JS.InvokeVoidAsync("ClosePath", Key);
@@ -159,7 +157,7 @@ namespace System.Drawing.Canvas
         }
         public async void DrawArc(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise){
             if(size.X != size.Y) throw new Exception("The size must fit a circle!");
-            await JS.InvokeVoidAsync("SetStrokeStyle", Key, brush.Convey(JS, Key), brush.Alpha);
+            await JS.InvokeVoidAsync("SetStrokeStyle", Key, await brush.Convey(JS, Key), brush.Alpha);
             await JS.InvokeVoidAsync("BeginPath", Key);
             await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle / 180 * Math.PI, eAngle / 180 * Math.PI, clockwise);
             await JS.InvokeVoidAsync("MoveTo", Key, point.X + size.X / 2, point.Y + size.Y / 2);
@@ -170,7 +168,21 @@ namespace System.Drawing.Canvas
             await JS.InvokeVoidAsync("ClosePath", Key);
             await JS.InvokeVoidAsync("StrokePath", Key);
         }
-        //public async void FillRect(Point point, Size )
+        public async void FillRect(Point point, Size size, Brush brush) {
+            await JS.InvokeVoidAsync("SetFillStyle", Key, await brush.Convey(JS, Key), brush.Alpha);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateRect", Key, point.X, point.Y, size.X, size.Y);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("FillPath", Key);
+        }
+        public async void FillCircle(Point point, Size size, Brush brush){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            await JS.InvokeVoidAsync("SetFillStyle", Key, await brush.Convey(JS, Key), brush.Alpha);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 2 * Math.PI);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("FillPath", Key);
+        }
         #endregion
     }
 }
