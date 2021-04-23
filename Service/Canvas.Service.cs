@@ -9,6 +9,7 @@ using Microsoft.JSInterop;
 
 namespace System.Drawing.Canvas
 {
+    #region Color
     public static class ColorCustom{
         public static String FromInt10ToInt16(int i){
             i = Math.Abs(i);
@@ -77,6 +78,27 @@ namespace System.Drawing.Canvas
             await base.Convey(js, key, type);
         }
     }
+    public sealed class RadialGradientBrush : Brush {
+        public RadialGradientBrush(Point p1, Point p2, params (double, Color)[] o) {
+            (Point1, Point2) = (p1, p2);
+            foreach(var i in o)
+                Points.Add(i.Item1, i.Item2);
+        }
+        public Point Point1;
+        public Point Point2;
+        public Dictionary<double, Color> Points = new Dictionary<double, Color>();
+        public override async Task Convey(IJSRuntime js, string key, bool type)
+        {
+            List<Object> l = new List<object>();
+            foreach (var i in Points) {
+                l.Add(i.Key);
+                l.Add(i.Value.ToString());
+            }
+            await js.InvokeVoidAsync("SetLinearGradient", key, Point1.X, Point1.Y, Point2.X, Point2.Y, l.ToArray(), type);
+            await base.Convey(js, key, type);
+        }
+    }
+
     public struct Point{
         public int X;
         public int Y;
@@ -89,6 +111,8 @@ namespace System.Drawing.Canvas
         public Size(int x, int y) => (X, Y) = (x, y);
         public static implicit operator Size((int, int)i) => new Size(i.Item1, i.Item2);
     }
+    #endregion
+
     #region Font
     public enum FontStyle{
         Normal, Italic, Oblique
@@ -133,18 +157,21 @@ namespace System.Drawing.Canvas
     }
     #endregion
 
-
     public class Canvas2D{
         #region Definite
         private IJSRuntime JS;
         private String Key;
         private bool isInited = false;
+        public bool isRadian = false;
         public void Init(IJSRuntime JSRuntime, String key = "canvas")
         {
             JS = JSRuntime;
             Key = key;
             isInited = true;
         }
+        #endregion
+
+        #region Simple Geometric Figure
         public async void DrawRect(Point point, Size size, Brush brush){
             await brush.Convey(JS, Key, false);
             await JS.InvokeVoidAsync("BeginPath", Key);
@@ -160,16 +187,22 @@ namespace System.Drawing.Canvas
             await JS.InvokeVoidAsync("ClosePath", Key);
             await JS.InvokeVoidAsync("StrokePath", Key);
         }
-        public async void DrawArc(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise){
+        public async void DrawPie(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise = false){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            (sAngle, eAngle) = isRadian ? (sAngle, eAngle) : (sAngle / 180 * Math.PI, eAngle / 180 * Math.PI);
+            await brush.Convey(JS, Key, false);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle, eAngle, clockwise);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2, point.Y + size.Y / 2);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(sAngle)), point.Y + size.Y / 2 * (1 - Math.Sin(sAngle)));
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("StrokePath", Key);
+        }
+        public async void DrawArc(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise = false){
             if(size.X != size.Y) throw new Exception("The size must fit a circle!");
             await brush.Convey(JS, Key, false);
             await JS.InvokeVoidAsync("BeginPath", Key);
-            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle / 180 * Math.PI, eAngle / 180 * Math.PI, clockwise);
-            await JS.InvokeVoidAsync("MoveTo", Key, point.X + size.X / 2, point.Y + size.Y / 2);
-            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(sAngle / 180 * Math.PI)), point.Y + size.Y / 2 * (1 - Math.Sin(sAngle / 180 * Math.PI)));
-            await JS.InvokeVoidAsync("MoveTo", Key, point.X + size.X / 2, point.Y + size.Y / 2);
-            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(eAngle / 180 * Math.PI)), point.Y + size.Y / 2 * (1 - Math.Sin(eAngle / 180 * Math.PI)));
-
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle, eAngle, clockwise);
             await JS.InvokeVoidAsync("ClosePath", Key);
             await JS.InvokeVoidAsync("StrokePath", Key);
         }
@@ -185,6 +218,24 @@ namespace System.Drawing.Canvas
             await brush.Convey(JS, Key, true);
             await JS.InvokeVoidAsync("BeginPath", Key);
             await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, 0, 2 * Math.PI);
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("FillPath", Key);
+        }
+        public async void FillPie(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise = false){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            await brush.Convey(JS, Key, true);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle, eAngle, clockwise);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2, point.Y + size.Y / 2);
+            await JS.InvokeVoidAsync("CreateLine", Key, point.X + size.X / 2 * (1 + Math.Cos(sAngle)), point.Y + size.Y / 2 * (1 - Math.Sin(sAngle)));
+            await JS.InvokeVoidAsync("ClosePath", Key);
+            await JS.InvokeVoidAsync("FillPath", Key);
+        }
+        public async void FillArc(Point point, Size size, Brush brush, double sAngle, double eAngle, bool clockwise = false){
+            if(size.X != size.Y) throw new Exception("The size must fit a circle!");
+            await brush.Convey(JS, Key, false);
+            await JS.InvokeVoidAsync("BeginPath", Key);
+            await JS.InvokeVoidAsync("CreateArc", Key, point.X + size.X / 2, point.Y + size.Y / 2, size.X / 2, sAngle, eAngle, clockwise);
             await JS.InvokeVoidAsync("ClosePath", Key);
             await JS.InvokeVoidAsync("FillPath", Key);
         }

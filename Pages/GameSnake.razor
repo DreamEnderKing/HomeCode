@@ -13,9 +13,8 @@
     public void Draw()
     {
         try {
-            Brush l = new LinearGradientBrush((0, 0), (100, 100), (0, (0, 0, 0)), (0.5, (255, 0, 0)), (1, (0, 255, 255)));
-            Canvas.DrawRect((0, 0), (100, 100), l);
-            Canvas.FillRect((100, 0), (200, 100), l);
+            Brush l = new LinearGradientBrush((0, 0), (300, 300), (0, (255, 0, 0)), (1, (0, 0, 255)));
+            Canvas.DrawPie((100, 100), (100, 100), l, 0, 90);
         }
         catch(Exception e) {
             Msg = e.Message;
