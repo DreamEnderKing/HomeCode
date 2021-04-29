@@ -1,41 +1,40 @@
-function SetSolid(key, style, type)
-{
-   let can = document.getElementById(key).getContext("2d");
+function DebugWrite(str) {
+   console.log(str);
+}
+function LoadCanvas(key) {
+   try {
+      console.log("Canvas finding......");
+      $(document).ready(function() {
+         window.can = document.getElementById(key).getContext("2d");        
+      });
+    } catch (error) {
+      console.log("No canvas is found.");
+    }
+}
+function SetSolid(style, type) {
    if(type) can.fillStyle = style;
    else can.strokeStyle = style;
 }
-function SetAlpha(key, alpha)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetAlpha(alpha) {
    can.globalAlpha = alpha;
 }
-function SetShadow(key, color, alpha, blur, offsetX, offsetY)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetShadow(color, alpha, blur, offsetX, offsetY) {
    can.shadowColor = color;
    can.shadowBlur = blur;
    can.shadowOffsetX = offsetX;
    can.shadowOffsetY = offsetY;
    can.globalAlpha = alpha;
 }
-function SetLineCap(key, cap)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetLineCap(cap) {
    can.lineCap = cap;
 }
-function SetLineJoin(key, join)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetLineJoin(join) {
    can.lineJoin = join;
 }
-function SetLineWidth(key, width)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetLineWidth(width) {
    can.lineWidth = width;
 }
-function SetLineMiter(key, width)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetLineMiter(width) {
    can.miterLimit = width;
 }
 function SetLinearGradient() {
@@ -61,100 +60,64 @@ function SetRadialGradient() {
 
 
 
-function BeginPath(key)
-{
-   let can = document.getElementById(key).getContext("2d");
+function BeginPath(key) {
    can.beginPath();
 }
-function ClosePath(key)
-{
-   let can = document.getElementById(key).getContext("2d");
+function ClosePath(key) {
    can.closePath();
 }
-function FillPath(key)
-{
-   let can = document.getElementById(key).getContext("2d");
+function FillPath(key) {
    can.fill();
 }
-function StrokePath(key)
-{
-   let can = document.getElementById(key).getContext("2d");
+function StrokePath(key) {
    can.stroke();
 }
-function MoveTo(key, x, y)
-{
-   let can = document.getElementById(key).getContext("2d");
+function MoveTo(x, y) {
    can.moveTo(x, y);
 }
 
 
 
-function CreateRect(key, left, top, width, height)
-{
-   let can = document.getElementById(key).getContext("2d");
+function CreateRect(left, top, width, height) {
    can.rect(left, top, width, height);
 }
-function CreateArc(key, left, top, radius, sAngle, eAngle, counterClockwise = false)
-{
-   let can = document.getElementById(key).getContext("2d");
+function CreateArc(left, top, radius, sAngle, eAngle, counterClockwise = false) {
    can.arc(left, top, radius, sAngle, eAngle, counterClockwise);
 }
-function CreateQuadraticCurveTo(key, x1, y1, x_end, y_end)
-{
-   let can = document.getElementById(key).getContext("2d");
+function CreateQuadraticCurveTo(x1, y1, x_end, y_end) {
    can.quadraticCurveTo(x1, y1, x_end, y_end);
 }
-function CreateBezierCurveTo(key, x1, y1, x2, y2, x_end, y_end) 
-{
-   let can = document.getElementById(key).getContext("2d");
+function CreateBezierCurveTo(x1, y1, x2, y2, x_end, y_end)  {
    can.bezierCurveTo(x1, y1, x2, y2, x_end, y_end);
 }
-function CreateLine(key, x_end, y_end)
-{
-   let can = document.getElementById(key).getContext("2d");
+function CreateLine(x_end, y_end) {
    can.lineTo(x_end, y_end);
 }
 
 
 
 
-function SetFont(key, font)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetFont(font) {
    can.font = font;
 }
-function SetTextAlign(key, textAlign)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetTextAlign(textAlign) {
    can.textAlign = textAlign;
 }
-function SetTextBaseline(key, textBaseline)
-{
-   let can = document.getElementById(key).getContext("2d");
+function SetTextBaseline(textBaseline) {
    can.textBaseline = textBaseline;
 }
-function FillText(key, text, x, y)
-{
-   let can = document.getElementById(key).getContext("2d");
+function FillText(text, x, y) {
    can.fillText(text, x, y);
 }
-function StrokeText(key, text, x, y)
-{
-   let can = document.getElementById(key).getContext("2d");
+function StrokeText(text, x, y) {
    can.strokeText(text, x, y);
 }
-function DrawImage(key, url, x, y)
-{
-   let can = document.getElementById(key).getContext("2d");
+function DrawImage(url, x, y) {
    can.drawImage(url, x, y);
 }
-function DrawImage(key, url, x, y, width, height)
-{
-   let can = document.getElementById(key).getContext("2d");
+function DrawImage(url, x, y, width, height) {
    can.drawImage(url, x, y, width, height);
 }
-function DrawImage(key, url, x, y, width, height, sx,sy, swidth, sheight)
-{
-   let can = document.getElementById(key).getContext("2d");
+function DrawImage(url, x, y, width, height, sx,sy, swidth, sheight) {
    can.drawImage(url, sx, sy, swidth, sheight, x, y, width, height);
 }

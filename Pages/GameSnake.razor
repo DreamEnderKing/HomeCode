@@ -4,26 +4,79 @@
 
 @code
 {
+    int x, y;
+    int xStep { get => 400 / x; }
+    int yStep { get => 400 / y; }
+    double angle = 0; //0 degree: right
+    int _lvl = 1;
+    int lvl { get => _lvl; set {
+        _lvl = value;
+        timer.Interval = 2000 / _lvl;
+    } }
+    Timer timer = new Timer();
+    Queue<(int, int)> Data = new Queue<(int, int)>();
+    (double x, double y) head;
+    (int x, int y) award;
     string Msg = "No error.";
+    Random rand = new Random();
     protected override async Task OnInitializedAsync()
     {
+        (x, y) = (50, 50);
         Canvas.Init(JSRuntime);
+        Data.Enqueue((0, 0));
+        Data.Enqueue((1, 0));
+        head = (1, 0);
+        award = (x / 2, y / 2);
+        lvl = 1;
+        timer.Elapsed += Draw;
     }
 
-    public void Draw()
+    public async void Draw(object sender, EventArgs evg)
     {
         try {
-            Brush l = new LinearGradientBrush((0, 0), (300, 300), (0, (255, 0, 0)), (1, (0, 0, 255)));
-            Canvas.DrawPie((100, 100), (100, 100), l, 0, 90);
+            Brush bru = new SolidBrush((0, 0, 0));
+            Brush era = new SolidBrush((255, 255, 255));
+            Brush awa = new SolidBrush((255, 0, 0));
+            await Canvas.DrawRect((0, 0), (400, 400), new SolidBrush((0, 0, 0)));
+            await Canvas.FillRect((xStep * award.x, yStep * award.y), (xStep, yStep), awa);
+            head = (head.x + Math.Cos(angle), head.y + Math.Sin(angle));
+            //Canvas.DebugWrite($"Head: ({(int)head.x}, {(int)head.y}), Award: ({award.x}, {award.y})");
+            if(Data.Contains(((int)head.x, (int)head.y))) {
+                Msg = "Ends meet!";
+                timer.Stop();
+                return;
+            }
+            if((int)head.x != award.x || (int)head.y!=award.y) {
+                (int x, int y) end = Data.Dequeue();
+                await Canvas.FillRect((xStep * end.x, yStep * end.y), (xStep, yStep), era);
+            } else award = (rand.Next(0, x), rand.Next(0, y));
+            await Canvas.FillRect(((int)xStep * head.x, (int)yStep * head.y), (xStep, yStep), bru);
+            Data.Enqueue(((int)head.x, (int)head.y));
         }
         catch(Exception e) {
             Msg = e.Message;
         }
     }
+    public void changeDir() => angle = (angle < Math.PI / 2 * 3)? angle + Math.PI / 2: angle - Math.PI / 2 * 3;
+    public void Start() {
+        timer.Start();
+        JSRuntime.InvokeVoidAsync("LoadCanvas", "canvas");
+
+    }
+    public void Pause() => timer.Stop();
+    public void DiffUp() => lvl += 1;
+    public void DiffDown() => lvl -= 1;
 }
 
+<button @onclick="Start">Start</button>
+<button @onclick="Pause">Pause</button>
+<button @onclick="DiffUp">Increase Difficulty</button>
+<button @onclick="DiffDown">Decrease Difficulty</button><br />
+<button @onclick="@(()=>{angle = Math.PI / 2 * 3;})">Up</button>
+<button @onclick="@(()=>{angle = Math.PI / 2;})">Down</button>
+<button @onclick="@(()=>{angle = Math.PI;})">Left</button>
+<button @onclick="@(()=>{angle = 0;})">Right</button>
 <h1>
 @Msg
 </h1>
-<button @onclick="Draw">Draw</button>
-<canvas id="canvas" width="400" height="400" />
+<canvas id="canvas" width="400" height="400"/>
