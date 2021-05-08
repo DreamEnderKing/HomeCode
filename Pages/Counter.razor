@@ -35,23 +35,19 @@ Pi Value:@Pi_Value</p>
             await Canvas.FillCircle((0, 0), (400, 400), new SolidBrush((0, 255, 0)));
             inited = true;
         }
-        Task t_Draw = new Task(async ()=>{
-            int x = 0;
-            int y = 0;
-            Random random = new Random();
-            for(int i = 1; i<=times; i++)
+        int x = 0;
+        int y = 0;
+        Random random = new Random();
+        for(int i = 1; i<=times; i++)
+        {
+            x = random.Next(0, 400);
+            y = random.Next(0, 400);
+            await Canvas.FillRect((x, y), (radius, radius), new SolidBrush((255, 0, 0)));
+            if (Math.Pow(x - 200, 2) + Math.Pow(y - 200, 2) <= 40000)
             {
-                x = random.Next(0, 400);
-                y = random.Next(0, 400);
-                await Canvas.FillRect((x, y), (radius, radius), new SolidBrush((255, 0, 0)));
-                if (Math.Pow(x - 200, 2) + Math.Pow(y - 200, 2) <= 40000)
-                {
-                    insideCount++;
-                }
+                insideCount++;
             }
-        });
-        t_Draw.Start();
-        t_Draw.Wait();
+        }
         Pi_Value = (insideCount / currentCount * 4).ToString();
     }
 
