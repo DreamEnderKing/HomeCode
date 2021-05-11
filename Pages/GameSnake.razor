@@ -37,11 +37,10 @@
             Brush bru = new SolidBrush((0, 0, 0));
             Brush era = new SolidBrush((255, 255, 255));
             Brush awa = new SolidBrush((255, 0, 0));
-            await Canvas.DrawRect((0, 0), (400, 400), new SolidBrush((0, 0, 0)));
             await Canvas.FillRect((xStep * award.x, yStep * award.y), (xStep, yStep), awa);
             head = (head.x + Math.Cos(angle), head.y + Math.Sin(angle));
             //Canvas.DebugWrite($"Head: ({(int)head.x}, {(int)head.y}), Award: ({award.x}, {award.y})");
-            if(Data.Contains(((int)head.x, (int)head.y))) {
+            if(Data.Contains(((int)head.x, (int)head.y)) || !(0 <= head.x && head.x <= x  && 0 <= head.y && head.y <= y)) {
                 Msg = "Ends meet!";
                 timer.Stop();
                 return;
@@ -52,6 +51,7 @@
             } else award = (rand.Next(0, x), rand.Next(0, y));
             await Canvas.FillRect(((int)xStep * head.x, (int)yStep * head.y), (xStep, yStep), bru);
             Data.Enqueue(((int)head.x, (int)head.y));
+            await Canvas.DrawRect((0, 0), (400, 400), new SolidBrush((0, 0, 0)));
         }
         catch(Exception e) {
             Msg = e.Message;
